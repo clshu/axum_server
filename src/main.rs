@@ -1,14 +1,26 @@
 // #![allow(unused_imports)]
-use axum::extract::{Json, Path, Query};
-use axum::response::IntoResponse;
-use axum::{routing::get, routing::post, Router};
+mod graphql;
+mod utils;
+use async_graphql::{http::GraphiQLSource, EmptyMutation, EmptySubscription, Schema};
+use async_graphql_axum::{GraphQLRequest, GraphQLResponse};
+use axum::{
+    extract::{Extension, Json, Path, Query},
+    response::{self, IntoResponse},
+    routing::{get, post},
+    Router,
+};
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 use std::net::SocketAddr;
 
+use graphql::greeting::RootQuery;
+use utils::constants::GRAPHQL_PATH;
+
 #[tokio::main]
 async fn main() {
     tracing_subscriber::fmt::init();
+
+    let schema = Schema::build(RootQuery, EmptyMutation, EmptySubscription).finish();
 
     let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
 
@@ -17,7 +29,9 @@ async fn main() {
         .route("/foo", get(get_foo))
         .route("/bar/:user_id", get(get_bar))
         .route("/user/login", post(login))
-        .route("/", get(root));
+        .route("/", get(root))
+        .route(GRAPHQL_PATH, get(graphql_playground).post(graphql_endpoint))
+        .layer(Extension(schema));
 
     // run it with hyper on localhost:3000
     axum::Server::bind(&addr)
@@ -62,4 +76,15 @@ struct LoginParams {
 
 async fn login(Json(params): Json<LoginParams>) -> impl IntoResponse {
     Json(json!(params))
+}
+
+async fn graphql_endpoint(
+    schema: Extension<Schema<RootQuery, EmptyMutation, EmptySubscription>>,
+    req: GraphQLRequest,
+) -> GraphQLResponse {
+    schema.execute(req.into_inner()).await.into()
+}
+
+async fn graphql_playground() -> impl IntoResponse {
+    response::Html(GraphiQLSource::build().endpoint("/").finish())
 }

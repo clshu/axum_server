@@ -1,1 +1,2 @@
-pub mod passord;
+pub mod constants;
+pub mod password;
