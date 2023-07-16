@@ -9,8 +9,8 @@ use tower_http::services::ServeFile;
 use std::net::SocketAddr;
 
 use graphql::{
-    greeting::RootQuery,
     handlers::{graphql_endpoint, graphql_playground},
+    RootQuery,
 };
 use utils::constants::GRAPHQL_PATH;
 
@@ -20,7 +20,7 @@ async fn main() {
 
     let serve_file = ServeFile::new("./public/index.html");
 
-    let schema = Schema::build(RootQuery, EmptyMutation, EmptySubscription).finish();
+    let schema = Schema::build(RootQuery::default(), EmptyMutation, EmptySubscription).finish();
 
     let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
 

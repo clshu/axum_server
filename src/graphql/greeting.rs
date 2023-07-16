@@ -1,9 +1,10 @@
 use async_graphql::*;
 
-pub struct RootQuery;
+#[derive(Default)]
+pub struct GreetingQuery;
 
 #[Object]
-impl RootQuery {
+impl GreetingQuery {
     pub async fn greeting(&self) -> &'static str {
         "Greetings, Earthling!"
     }

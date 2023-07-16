@@ -5,7 +5,7 @@ use axum::{
     response::{self, IntoResponse},
 };
 
-use crate::graphql::greeting::RootQuery;
+use crate::graphql::RootQuery;
 
 pub async fn graphql_endpoint(
     schema: Extension<Schema<RootQuery, EmptyMutation, EmptySubscription>>,
