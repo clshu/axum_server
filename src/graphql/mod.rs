@@ -1,8 +1,7 @@
-pub mod greeting;
 pub mod handlers;
+pub mod resolvers;
 
-use async_graphql::MergedObject;
-use greeting::GreetingQuery;
+use async_graphql::{EmptyMutation, EmptySubscription, Schema};
+use resolvers::RootQuery;
 
-#[derive(MergedObject, Default)]
-pub struct RootQuery(GreetingQuery);
+pub type GqlSchema = Schema<RootQuery, EmptyMutation, EmptySubscription>;

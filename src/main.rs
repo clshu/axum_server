@@ -16,7 +16,7 @@ use std::net::SocketAddr;
 
 use graphql::{
     handlers::{graphql_endpoint, graphql_playground},
-    RootQuery,
+    resolvers::RootQuery,
 };
 use utils::constants::GRAPHQL_PATH;
 
