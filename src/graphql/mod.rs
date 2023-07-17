@@ -2,6 +2,6 @@ pub mod handlers;
 pub mod resolvers;
 
 use async_graphql::{EmptyMutation, EmptySubscription, Schema};
-use resolvers::RootQuery;
+use resolvers::Query;
 
-pub type GqlSchema = Schema<RootQuery, EmptyMutation, EmptySubscription>;
+pub type GqlSchema = Schema<Query, EmptyMutation, EmptySubscription>;

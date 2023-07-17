@@ -16,7 +16,7 @@ use std::net::SocketAddr;
 
 use graphql::{
     handlers::{graphql_endpoint, graphql_playground},
-    resolvers::RootQuery,
+    resolvers::Query,
 };
 use utils::constants::GRAPHQL_PATH;
 
@@ -30,11 +30,11 @@ async fn main() {
     // Build a schema
     let schema = if is_axum_env("log") {
         // Enable the logger extension
-        Schema::build(RootQuery::default(), EmptyMutation, EmptySubscription)
+        Schema::build(Query::default(), EmptyMutation, EmptySubscription)
             .extension(Logger)
             .finish()
     } else {
-        Schema::build(RootQuery::default(), EmptyMutation, EmptySubscription).finish()
+        Schema::build(Query::default(), EmptyMutation, EmptySubscription).finish()
     };
 
     let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
